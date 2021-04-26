@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.project.MemberDao">
+
+	<resultMap type="com.project.Member" id="Member">
+		<id column="ID" property="id" javaType="java.lang.Long" jdbcType="INTEGER" />
+		<result column="LOGINID" property="loginID" javaType="java.lang.String" jdbcType="VARCHAR" />
+		<result column="EMAIL" property="email" javaType="java.lang.String" jdbcType="VARCHAR" />
+		<result column="PASSWORD" property="password" javaType="java.lang.String" jdbcType="VARCHAR" />
+		<result column="NAME" property="name" javaType="java.lang.String" jdbcType="VARCHAR" />
+		<result column="PHONE" property="phone" javaType="java.lang.String" jdbcType="VARCHAR" />
+		<result column="ADDR" property="addr" javaType="java.lang.String" jdbcType="VARCHAR" />
+		<result column="REGDATE" property="registerDate" javaType="java.util.Date" jdbcType="DATE" />
+	</resultMap>
+	
+	<select id="selectByID" parameterType="String" resultMap="Member">
+		select *
+		from spring5fs.MEMBER
+		where LOGINID = #{loginID}
+	</select>
+	
+	<select id="count" resultMap="Member">
+		select count(*)
+		from spring5fs.member
+	</select>
+	
+	<insert id="insert" parameterType="com.project.Member" useGeneratedKeys="true" keyProperty="id">
+		insert into
+		spring5fs.member(LOGINID, EMAIL, PASSWORD, NAME, PHONE, ADDR, REGDATE)
+		values(#{loginID}, #{email}, #{password}, #{name}, #{phone}, #{addr}, #{registerDate})
+	</insert>
+	
+	<update id="change" parameterType="com.project.Member">
+		update spring5fs.member set
+		EMAIL = #{email}, PASSWORD = #{password}, NAME = #{name}, PHONE = #{phone}, ADDR = #{addr}
+		where id = #{id}
+	</update>
+</mapper>

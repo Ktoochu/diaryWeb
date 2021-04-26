@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.project.DiaryDao">
+
+	<resultMap type="com.project.Diary" id="Diary">
+		<id column="ID" property="id" javaType="java.lang.Long" jdbcType="INTEGER" />
+		<id column="diaryNumber" property="number" javaType="int" jdbcType="INTEGER" />
+		<result column="title" property="title" javaType="java.lang.String" jdbcType="VARCHAR" />
+		<result column="content" property="content" javaType="java.lang.String" jdbcType="VARCHAR" />
+		<result column="file" property="file" javaType="java.lang.String" jdbcType="VARCHAR" />
+		<result column="date" property="registerDate" javaType="java.util.Date" jdbcType="DATE" />
+	</resultMap>
+	
+	<select id="count" resultType="java.lang.Integer">
+		select count(*)
+		from spring5fs.diary
+		where ID = #{id}
+	</select>
+	
+	<insert id="write" parameterType="com.project.Diary" keyProperty="id">
+		insert into
+		spring5fs.diary(ID, diaryNumber, title, content, file, date)
+		values(#{id}, #{number}, #{title}, #{content}, #{path}, #{date})
+	</insert>
+	
+	<update id="update" parameterType="com.project.Diary">
+		update spring5fs.diary set
+		title = #{title}, content = #{content}
+		where id = #{id} AND diaryNumber = #{number}
+	</update>
+	
+	<select id="showAll" parameterType="Long" resultMap="Diary">
+		select *
+		from spring5fs.diary
+		where id = #{id}
+	</select>
+	
+	<select id="searchKey" resultMap="Diary">
+		select *
+		from spring5fs.diary
+		where (content like CONCAT('%',#{key},'%') OR title like CONCAT('%',#{key},'%') OR date like CONCAT('%',#{key},'%')) AND id = #{id} 
+	</select>
+	
+	<select id="searchNum" resultMap="Diary">
+		select *
+		from spring5fs.diary
+		where id = #{id} AND diaryNumber = #{key}
+	</select>
+	
+	<delete id="delete">
+		delete from spring5fs.diary
+		where id = #{id} AND diaryNumber = #{number}
+	</delete>
+
+</mapper>

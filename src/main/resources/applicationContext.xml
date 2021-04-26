@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+	
+	<context:annotation-config />
+	
+	<!-- MultipartResolver 설정 -->
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="maxUploadSize" value="100000000" />
+		<property name="maxInMemorySize" value="100000000" />
+		<property name="defaultEncoding" value="utf-8" />    <!-- 인코딩 -->
+	</bean>
+	
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.mysql.cj.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://localhost/spring5fs?characterEncoding=utf8&amp;serverTimezone=UTC" />
+		
+		<property name="username" value="spring5" />
+		<property name="password" value="spring5" />
+	</bean>
+	
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="configLocation" value="classpath:mybatis-config.xml" />
+	</bean>
+
+	<bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg index="0" ref="sqlSessionFactory" />
+	</bean>
+	
+	<bean id="MemberMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.project.MemberDao" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+	
+	<bean id="DiaryMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.project.DiaryDao" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+	
+	<bean id="memberRegSvc" class="com.project.MemberRegisterService">
+		<constructor-arg ref="MemberMapper" />
+	</bean>
+	
+	<bean id="infoPrinter" class="com.project.MemberInfoPrinter">
+		<property name="memberDao" ref="MemberMapper" />
+	</bean>
+	
+	<bean id="diaryMeSvc" class="com.project.DiaryMenuService">
+		<constructor-arg ref="DiaryMapper" />
+	</bean>
+	
+	<bean id="loginService" class="com.project.LoginService" />
+	<bean id="loginInfoPrinter" class="com.project.LoginInfoPrinter" />
+	<bean id="loginPrinter" class="com.project.LoginPrinter" />
+	<bean id="memberPrinter" class="com.project.MemberPrinter" />
+	
+</beans>
